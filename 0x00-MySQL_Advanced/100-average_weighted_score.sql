@@ -19,14 +19,8 @@ SELECT SUM(projects.weight)
     ON corrections.project_id = projects.id
     WHERE corrections.user_id = user_id;
 
-IF averager = 0 THEN
-    UPDATE users
-    SET average_score = 0
-    WHERE users.id = user_id;
-ELSE
     UPDATE users
         SET average_score = weighted_total / averager
         WHERE users.id = user_id;
-END IF;
 END $$
 DELIMITER ;
