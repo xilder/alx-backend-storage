@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
+"""
+provides some stats about Nginx
+logs stored in MongoDB
+"""
 
 from pymongo import MongoClient
 
 
-if __name__ == "__main__":
+def log_stats():
+    """
+    provides some stats about Nginx
+    logs stored in MongoDB
+    """
     client = MongoClient('mongodb://localhost:27017')
     methods = {
         'GET': 0,
@@ -27,6 +35,10 @@ if __name__ == "__main__":
 
     print(f"{count} logs")
     print("Methods:")
-    for k, v in methods.items():
+    for k in methods.keys():
         print(f"\tmethod {k}: {methods[k]}")
     print(f"{status} status check")
+
+
+if __name__ == "__main__":
+    log_stats()
