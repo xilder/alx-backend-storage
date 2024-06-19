@@ -36,7 +36,7 @@ def log_stats():
     print(f"{count} logs")
     print("Methods:")
     for k in methods.keys():
-        print(f"\tmethod {k}: {methods[k]}")
+        print(f"    method {k}: {methods[k]}")
     print(f"{status} status check")
 
 
