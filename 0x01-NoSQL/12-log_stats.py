@@ -15,6 +15,7 @@ def log_stats(mongo_collection):
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     status = mongo_collection.count_documents({})
     print(f"{status} logs")
+    print("Methods:")
     for method in methods:
         method_len = len(list(mongo_collection.find({"method": method})))
         print(f"\tmethod {method}: {method_len}")
