@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 provides some stats about Nginx
@@ -21,7 +20,10 @@ def log_stats(mongo_collection):
     for method in methods:
         method_len = len(list(mongo_collection.find({"method": method})))
         print(f"\tmethod {method}: {method_len}")
-    count = mongo_collection.count_documents({"method": "GET", "path": "/status"})
+    count = mongo_collection.count_documents({
+        "method": "GET",
+        "path": "/status"
+        })
     print(f"{count} status check")
 
     print('IPs:')
@@ -38,8 +40,6 @@ def log_stats(mongo_collection):
     results = mongo_collection.aggregate(pipeline)
     for result in results:
         print(f"\t{result.get('_id')}: {result.get('count')}")
-
-
 
 
 if __name__ == "__main__":
