@@ -20,6 +20,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return count
 
+
 def call_history(method: Callable) -> Callable:
     """
     stores the history of every method call
@@ -33,6 +34,23 @@ def call_history(method: Callable) -> Callable:
             self._redis.rpush(f"{method.__qualname__}:outputs", str(results))
             return results
     return history
+
+
+def replay(method: Callable) -> Any:
+    """
+    replays the history of a function including inputs and output
+    """
+    if method is None or not hasattr(method, "__self__"):
+        return
+    redis_db = getattr(method.__self__, "_redis")
+    inputs = redis_db.lrange(f"{method.__qualname__}:inputs", 0, -1)
+    outputs = redis_db.lrange(f"{method.__qualname__}:outputs", 0, -1)
+    print(f"{method.__qualname__} was called {len(outputs)} times:")
+    for i, o in zip(inputs, outputs):
+        i = i.decode('utf-8')
+        o = o.decode('utf-8')
+        print(f"{method.__qualname__}(*{i}) -> {o}")
+
 
 class Cache:
     """Cache class using redis"""
