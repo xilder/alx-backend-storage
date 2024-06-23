@@ -30,4 +30,3 @@ def get_page(url: str) -> str:
     """get_page function"""
     res = requests.get(url).text
     return res
-
