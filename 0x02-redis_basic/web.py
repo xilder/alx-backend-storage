@@ -9,8 +9,7 @@ rd = redis.Redis()
 
 
 def data_cacher(method: Callable) -> Any:
-    """caches the number of times a function a site called"""
-
+    """caches the output of a site"""
     @wraps(method)
     def cacher(url: str) -> str:
         """cache wrapper"""
