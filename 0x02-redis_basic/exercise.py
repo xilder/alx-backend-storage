@@ -20,6 +20,19 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return count
 
+def call_history(method: Callable) -> Callable:
+    """
+    stores the history of every method call
+    """
+    @wraps(method)
+    def history(self, *args, **kwargs) -> Any:
+        """stores the history of a method (its inputs and output)"""
+        if isinstance(self._redis, redis.Redis):
+            results = method(self, *args, **kwargs)
+            self._redis.rpush(f"{method.__qualname__}:inputs", str(args))
+            self._redis.rpush(f"{method.__qualname__}:outputs", str(results))
+            return results
+    return history
 
 class Cache:
     """Cache class using redis"""
@@ -28,6 +41,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
@@ -38,6 +52,8 @@ class Cache:
         self._redis.set(key, data)
         return key
 
+    @call_history
+    @count_calls
     def get(
             self, key: str, fn: Callable = None
     ) -> Union[str, int, bytes, float]:
